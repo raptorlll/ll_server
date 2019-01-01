@@ -1,0 +1,32 @@
+{
+  "name": "node_menu",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "co": "^4.6.0",
+    "concurrently": "^4.1.0",
+    "express": "^4.16.3",
+    "mongoose": "^5.0.13",
+    "nodemon": "^1.17.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon index.js",
+    "sm": "concurrently \"npm run server\" \" \"mongo_run.bat",
+    "reset_db": "node ./reset_db.js",
+    "populate": "node ./prepopulation/populate.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raptorlll/menu.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/raptorlll/menu/issues"
+  },
+  "homepage": "https://github.com/raptorlll/menu#readme"
+}
