@@ -8,7 +8,7 @@ const LanguageSchema = new Schema({
   description: {type: String, default: '', trim: true},
   code: {type: String, default: '', trim: true, unique: true},
   countries: [
-    {type: mongoose.Schema.Types.ObjectId, ref: 'Member'}
+    {type: mongoose.Schema.Types.ObjectId, ref: 'Country'}
   ],
 });
 
