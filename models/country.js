@@ -8,7 +8,7 @@ const CountrySchema = new Schema({
   name: {type: String, default: '', trim: true},
   flag: {type: String, default: '', trim: true},
   languages: [
-    {type: mongoose.Schema.Types.ObjectId, ref: 'Country'}
+    {type: mongoose.Schema.Types.ObjectId, ref: 'Language'}
   ]
 });
 

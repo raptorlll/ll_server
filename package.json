@@ -18,7 +18,7 @@
     "server": "nodemon index.js",
     "sm": "concurrently \"npm run server\" \" \"mongo_run.bat",
     "reset_db": "node ./reset_db.js",
-    "populate": "node ./prepopulation/populate.js"
+    "populate": "node ./prepopulation/populate.js --part=\"language\""
   },
   "repository": {
     "type": "git",
