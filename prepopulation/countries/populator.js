@@ -1,36 +1,24 @@
 // Rest for a countries https://restcountries.eu/
-const https = require('https');
 const makeGetRequest = require('../../helpers/http').makeGetRequest;
 const mongoose = require('mongoose');
 
-//
-// var newArticle = new Article({
-//   title: 'New Article',
-//   authors: [userA._id, userB._id]
-// })
-// newArticle.save()
-//
-// Article.find({}).populate('authors').exec((err, articles) => {
-//   console.log(articles)
-// }); // Work fine as articles authors are pushed while saving the article
-//
-// User.find({}).populate('articles').exec((err, articles) => {
-//   console.log(articles)
-// }); // prints undefined
-//
-// User.find({'name': 'userA'}).populate('articles').exec((err, a) => {
-//   console.log(a)
-// }) // print []
-
-const parseInformation = (data) => {
+const parseInformation = (languagesList, languageModel) => (data) => {
   const Country = mongoose.model('Country');
-  const Language = mongoose.model('Language');
+  const countriesParsed = JSON.parse(data);
 
-  Language.find({}).populate()
-    .exec((err, languagesList) => {
-      const countriesParsed = JSON.parse(data);
+  if (typeof countriesParsed.status !== "undefined" && countriesParsed.status === 404) {
+    console.log("[Fetching error]", languageModel.code);
 
-      countriesParsed.map((parsedData) => {
+    return;
+  }
+
+  countriesParsed.map((parsedData) => {
+    Country.findOne({name: parsedData.name})
+      .exec((err, countryModelFetched) => {
+        if (countryModelFetched || err) {
+          return;
+        }
+
         const countryModel = new Country({
           code: parsedData.topLevelDomain,
           name: parsedData.name,
@@ -63,12 +51,28 @@ const parseInformation = (data) => {
           });
         });
       });
-    });
+  });
 };
 
-const fetchCountriesInfo = (language) => {
-  makeGetRequest(`https://restcountries.eu/rest/v2/lang/${language}`)
-    .then(parseInformation);
+const handleError = (error) => {
+  console.log("[Fetching error]", error)
+};
+
+const fetchCountriesInfo = () => {
+  const Language = mongoose.model('Language');
+  const Country = mongoose.model('Country');
+
+  //Get rid off data
+  Country.remove({}, (err) => {
+    Language.find({}).populate()
+      .exec((err, languagesList) => {
+        languagesList.forEach((language) => {
+          makeGetRequest(`https://restcountries.eu/rest/v2/lang/${language.code}`)
+            .then(parseInformation(languagesList, language))
+            .catch(handleError);
+        });
+      });
+  });
 };
 
 module.exports = {fetchCountriesInfo};

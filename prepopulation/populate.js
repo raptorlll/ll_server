@@ -17,7 +17,7 @@ connect()
     schema();
 
     switch (program.part) {
-      case 'language':
+      case 'languages':
         languagePopulator()
           .then(() => {
             process.exit(0);
@@ -28,12 +28,14 @@ connect()
 
         break;
       case 'countries':
-        fetchCountriesInfo('be');
+        fetchCountriesInfo();
 
         break
     }
   })
-  .catch(connect);
+  .catch((error) => {
+    console.log("Connection error", error)
+  });
 
 
 function connect() {
