@@ -73,6 +73,11 @@ const parseInformation = (languagesList, languageModel) => (data) => {
           });
         });
     });
+
+    /**
+     * Dirty hack for a moment
+     */
+    setTimeout(res.bind(this, [languageModel.code]), 10000)
   });
 };
 
