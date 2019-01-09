@@ -3,6 +3,7 @@
 const main = require('../controllers/main');
 const language = require('../controllers/language');
 const country = require('../controllers/country');
+const authRoutes = require('./auth')
 
 const errorResponses = function (code, err) {
   switch (code) {
@@ -19,6 +20,7 @@ module.exports = function (app) {
   app.get('/', main.index);
   app.post('/language', language.create);
   app.post('/country', country.create);
+  authRoutes(app);
 
   app.use(function (err, req, res, next) {
     if (err.message) {

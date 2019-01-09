@@ -1,34 +1,35 @@
-  'use strict';
+'use strict';
 
-  const express = require("express");
-  const bodyParser = require("body-parser");
-  const mongoose = require('mongoose');
-  const config = require('./config');
-  const schema = require('./models');
-  var app = express();
+const express = require("express");
+const bodyParser = require("body-parser");
+const mongoose = require('mongoose');
+const config = require('./config');
+const schema = require('./models');
 
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({extended: true}));
+var app = express();
 
-  connect()
-    .then(function () {
-      console.log('Mongodb connected');
-    })
-    .catch(connect);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
-  schema();
-  require('./config/routes')(app);
+connect()
+  .then(function () {
+    console.log('Mongodb connected');
+  })
+  .catch(connect);
 
-  listen();
+schema();
+require('./routes')(app);
 
-  function listen() {
-    var server = app.listen(3000, function () {
-      console.log("app running on port.", server.address().port);
-    });
-  }
+listen();
 
-  function connect() {
-    var options = {server: {socketOptions: {keepAlive: 1}}};
+function listen() {
+  var server = app.listen(3000, function () {
+    console.log("app running on port.", server.address().port);
+  });
+}
 
-    return mongoose.connect(config.db, options);
-  }
+function connect() {
+  var options = {server: {socketOptions: {keepAlive: 1}}};
+
+  return mongoose.connect(config.db, options);
+}
