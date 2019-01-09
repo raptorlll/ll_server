@@ -3,9 +3,9 @@ services:
   app:
     container_name: app
     restart: always
-#    environment:
-#    - MONGO_CONNECTION="mongodb://mongo:27017/local"
-#    - NODE_ENV="development"
+    environment:
+      MONGO_CONNECTION: mongodb://mongo:27017/local
+      NODE_ENV: production
     build: .
     volumes:
     - ".:/usr/src/app"
@@ -16,7 +16,7 @@ services:
   mongo:
     container_name: mongo
     image: mongo
-    volumes:
-    - ./data:/data/db
+#    volumes:
+#    - ./data:/data/db
     ports:
     - "27017:27017"

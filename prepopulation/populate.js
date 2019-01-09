@@ -28,7 +28,13 @@ connect()
 
         break;
       case 'countries':
-        fetchCountriesInfo();
+        fetchCountriesInfo()
+          .then(() => {
+            process.exit(0);
+          })
+          .catch(() => {
+            process.exit(1);
+          });
 
         break
     }
