@@ -14,6 +14,5 @@ const CountrySchema = new Schema({
 
 CountrySchema.path('code').required(true, 'Code name cannot be blank');
 CountrySchema.path('name').required(true, 'Member name cannot be blank');
-// CountrySchema.path('flag').required(true, 'Country flag cannot be blank');
 
-module.exports = CountrySchema;
+mongoose.model('Country', CountrySchema);

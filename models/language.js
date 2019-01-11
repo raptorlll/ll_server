@@ -13,7 +13,6 @@ const LanguageSchema = new Schema({
 });
 
 LanguageSchema.path('name').required(true, 'Language name cannot be blank');
-// LanguageSchema.path('description').required(true, 'Language description cannot be blank');
 LanguageSchema.path('code').required(true, 'Language code cannot be blank');
 
-module.exports = LanguageSchema;
+mongoose.model('Language', LanguageSchema);

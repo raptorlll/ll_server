@@ -34,6 +34,14 @@ const authRoutes = (app) => {
       });
     }
 
+    if(!user.role) {
+      return res.status(422).json({
+        errors: {
+          role: 'is required',
+        },
+      });
+    }
+
     const finalUser = new User(user);
 
     finalUser.setPassword(user.password);

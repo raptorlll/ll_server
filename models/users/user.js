@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const pupilInitialization = require('./pupil');
+const teacherInitialization = require('./teacher');
 
-const { Schema } = mongoose;
+const {Schema} = mongoose;
 
 const UsersSchema = new Schema({
   email: String,
@@ -42,4 +44,7 @@ UsersSchema.methods.toAuthJSON = function() {
   };
 };
 
-module.exports = UsersSchema;
+const User = mongoose.model('User', UsersSchema);
+
+pupilInitialization();
+teacherInitialization();
