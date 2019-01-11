@@ -23,8 +23,8 @@ module.exports = function (app) {
   authRoutes(app);
 
   app.use(function (err, req, res, next) {
-    if (err.message) {
-      return next();
+    if (err) {
+      return res.status(500).json(errorResponses(500, err));
     }
 
     console.error(err.stack);

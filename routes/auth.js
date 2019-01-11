@@ -10,6 +10,14 @@ const authRoutes = (app) => {
   app.post('/', auth.optional, (req, res, next) => {
     const { body: { user } } = req;
 
+    if (!user) {
+      return res.status(422).json({
+        errors: {
+          user: 'User object is required',
+        },
+      });
+    }
+
     if(!user.email) {
       return res.status(422).json({
         errors: {
