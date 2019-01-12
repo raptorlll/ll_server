@@ -11,32 +11,31 @@ const checkUserFields = (user, fields) => {
   return !_.difference(fields, Object.keys(user)).length;
 };
 
-const createUserObject = async (user) => {
+const populateUserModel = async (UserTypeModel, user, additionalFieldsFiller = () => {}) =>  {
+  const userInstance = new UserTypeModel(_.pick(user, ["email", "birthday",]))
+  userInstance.setPassword(user.password)
+
+  await Promise.all([
+    userInstance.setCountry(user.country),
+    userInstance.setLanguages(user.languages)
+  ]).then(additionalFieldsFiller.bind(this));
+
+  return Promise.resolve(userInstance)
+}
+
+const createUserObject = (user) => {
   if (checkUserFields(user, userFields.teacher)) {
     const TeacherModel = mongoose.model('Teacher');
-    const teacher = new TeacherModel(_.pick(user, ["email",]));
-    teacher.setPassword(user.password);
 
-    await Promise.all([
-      teacher.setCountry(user.country),
-      teacher.setLanguages(user.languages)
-    ]);
-
-    return Promise.resolve(teacher);
+    return populateUserModel(TeacherModel, user, function () {
+      this.certificates = user.certificates;
+    });
   }
 
   if (checkUserFields(user, userFields.pupil)) {
     const PupilModel = mongoose.model('Pupil');
-    const pupilModel = new PupilModel(_.pick(user, ["email", "birthday",]));
-    pupilModel.setPassword(user.password);
 
-
-    await Promise.all([
-      pupilModel.setCountry(user.country),
-      pupilModel.setLanguages(user.languages)
-    ]);
-
-    return Promise.resolve(pupilModel);
+    return populateUserModel(PupilModel, user);
   }
 
   return Promise.reject();
