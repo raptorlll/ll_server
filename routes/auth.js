@@ -11,24 +11,35 @@ const checkUserFields = (user, fields) => {
   return !_.difference(fields, Object.keys(user)).length;
 };
 
-const populateUserObject = (user) => {};
-
-const createUserObject = (user) => {
+const createUserObject = async (user) => {
   if (checkUserFields(user, userFields.teacher)) {
     const TeacherModel = mongoose.model('Teacher');
-    const teacher = new TeacherModel(user);
+    const teacher = new TeacherModel(_.pick(user, ["email",]));
     teacher.setPassword(user.password);
 
-    return teacher;
+    await Promise.all([
+      teacher.setCountry(user.country),
+      teacher.setLanguages(user.languages)
+    ]);
+
+    return Promise.resolve(teacher);
   }
 
   if (checkUserFields(user, userFields.pupil)) {
     const PupilModel = mongoose.model('Pupil');
-    const pupilModel = new PupilModel(user);
+    const pupilModel = new PupilModel(_.pick(user, ["email",]));
     pupilModel.setPassword(user.password);
 
-    return pupilModel;
+
+    await Promise.all([
+      pupilModel.setCountry(user.country),
+      pupilModel.setLanguages(user.languages)
+    ]);
+
+    return Promise.resolve(pupilModel);
   }
+
+  return Promise.reject();
 };
 
 const getValidationErrorObject = (user) => {
@@ -40,12 +51,13 @@ const getValidationErrorObject = (user) => {
 };
 
 const authRoutes = (app) => {
-  app.post('/', auth.optional, (req, res, next) => {
+  app.post('/', auth.optional, async (req, res, next) => {
     const { body: { user } } = req;
+    let userObject
 
-    const userObject = createUserObject(user)
-
-    if (!userObject) {
+    try {
+      userObject = await createUserObject(user)
+    } catch (e) {
       return res.status(422).json(getValidationErrorObject(user));
     }
 

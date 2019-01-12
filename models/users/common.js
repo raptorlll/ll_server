@@ -16,7 +16,7 @@ const commonUserSchema = {
 };
 
 const userFields = ["email", "password"];
-const commonFields = []//["languages", "country", "birthday"];
+const commonFields = ["languages", "country", "birthday"];
 const fieldsForUserType = {
   teacher: ["certificates", ...commonFields, ...userFields],
   pupil: [...commonFields, ...userFields],
