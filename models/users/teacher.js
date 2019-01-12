@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const commonParameters = require('./common');
+const commonParameters = require('./common').commonUserSchema;
 
 module.exports = () => {
   const options = {discriminatorKey: 'kind'};

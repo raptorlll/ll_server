@@ -1,53 +1,61 @@
 const mongoose = require('mongoose');
 const passport = require('passport');
+const _ = require("lodash");
 require('../config/passport');
 const auth = require('./helpers/jwt');
+const userFields = require('../models/users/common').fieldsForUserType;
 
 const User = mongoose.model('User');
 
+const checkUserFields = (user, fields) => {
+  return !_.difference(fields, Object.keys(user)).length;
+};
+
+const populateUserObject = (user) => {};
+
+const createUserObject = (user) => {
+  if (checkUserFields(user, userFields.teacher)) {
+    const TeacherModel = mongoose.model('Teacher');
+    const teacher = new TeacherModel(user);
+    teacher.setPassword(user.password);
+
+    return teacher;
+  }
+
+  if (checkUserFields(user, userFields.pupil)) {
+    const PupilModel = mongoose.model('Pupil');
+    const pupilModel = new PupilModel(user);
+    pupilModel.setPassword(user.password);
+
+    return pupilModel;
+  }
+};
+
+const getValidationErrorObject = (user) => {
+  return {
+    errors: {
+      generic: "Check that you have send proper fields"
+    }
+  };
+};
+
 const authRoutes = (app) => {
-  //POST new user route (optional, everyone has access)
   app.post('/', auth.optional, (req, res, next) => {
     const { body: { user } } = req;
 
-    if (!user) {
-      return res.status(422).json({
-        errors: {
-          user: 'User object is required',
-        },
-      });
+    const userObject = createUserObject(user)
+
+    if (!userObject) {
+      return res.status(422).json(getValidationErrorObject(user));
     }
 
-    if(!user.email) {
-      return res.status(422).json({
-        errors: {
-          email: 'is required',
-        },
+    return userObject.save()
+      .then(() => {
+        return res.json({ user: userObject.toAuthJSON() })
+      })
+      .catch((error) => {
+        return res.status(422).json(error);
       });
-    }
-
-    if(!user.password) {
-      return res.status(422).json({
-        errors: {
-          password: 'is required',
-        },
-      });
-    }
-
-    if(!user.role) {
-      return res.status(422).json({
-        errors: {
-          role: 'is required',
-        },
-      });
-    }
-
-    const finalUser = new User(user);
-
-    finalUser.setPassword(user.password);
-
-    return finalUser.save()
-      .then(() => res.json({ user: finalUser.toAuthJSON() }));
   });
 
   //POST login route (optional, everyone has access)
