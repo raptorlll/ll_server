@@ -27,7 +27,7 @@ const createUserObject = async (user) => {
 
   if (checkUserFields(user, userFields.pupil)) {
     const PupilModel = mongoose.model('Pupil');
-    const pupilModel = new PupilModel(_.pick(user, ["email",]));
+    const pupilModel = new PupilModel(_.pick(user, ["email", "birthday",]));
     pupilModel.setPassword(user.password);
 
 

@@ -1,9 +1,22 @@
 const mongoose = require("mongoose");
 
+function setBirthday(birthday) {
+  if (birthday instanceof Date) {
+    return birthday;
+  }
+
+  if (typeof birthday === "string") {
+    return new Date(birthday);
+  }
+
+  return;
+}
+
 const commonUserSchema = {
   birthday: {
     type: Date,
     required: [true, "Fill birthday"],
+    set: setBirthday,
   },
   country: {
     type: mongoose.Schema.Types.ObjectId, ref: 'Country',
