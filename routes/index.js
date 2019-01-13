@@ -3,7 +3,10 @@
 const main = require('../controllers/main');
 const language = require('../controllers/language');
 const country = require('../controllers/country');
+const conversation = require('../controllers/conversation');
+const message = require('../controllers/message');
 const authRoutes = require('./auth')
+const auth = require('./helpers/jwt');
 
 const errorResponses = function (code, err) {
   switch (code) {
@@ -20,6 +23,8 @@ module.exports = function (app) {
   app.get('/', main.index);
   app.post('/language', language.create);
   app.post('/country', country.create);
+  app.post('/conversation', auth.required,conversation.create);
+  app.post('/message', auth.required, message.create);
   authRoutes(app);
 
   app.use(function (err, req, res, next) {

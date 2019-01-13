@@ -8,7 +8,6 @@ exports.create = async(function* (req, res, next) {
   const country = new Country({
     name: req.body.name,
     flag: req.body.flag,
-    // bands: [band]
   });
 
   try {
