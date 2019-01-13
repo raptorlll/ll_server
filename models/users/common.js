@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const listRequire = require("../../helpers/model-validation").listRequire;
 
 function setBirthday(birthday) {
   if (birthday instanceof Date) {
@@ -42,15 +43,7 @@ const createExtendedSchema = (additionalParameters = {}) => {
     ...additionalParameters
   }, options);
 
-  schema.path('languages').validate(function(languages) {
-    if(!languages){
-      return false
-    } else if (languages.length === 0){
-      return false
-    }
-
-    return true;
-  });
+  schema.path('languages').validate(listRequire);
 
   schema.methods.setCountry = function(country){
     return new Promise((res, rej) => {

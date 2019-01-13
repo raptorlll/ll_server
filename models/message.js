@@ -14,7 +14,10 @@ const schema = new Schema({
   conversation: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Conversation',
-    required: [true, 'Conversation is required'],
+    required: [function() {
+      return this.conversation !== null;
+    }, 'Conversation is required'],
+
   },
 });
 

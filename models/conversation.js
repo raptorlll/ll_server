@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const listRequire = require("../helpers/model-validation").listRequire;
 
 const Schema = mongoose.Schema;
 
@@ -12,15 +13,7 @@ const schema = new Schema({
       ref: 'User',
       required: [true, 'Choose participants'],
       validate: {
-        validator: function(items) {
-          if(!items){
-            return false
-          } else if (items.length === 0){
-            return false
-          }
-
-          return true;
-        }
+        validator: listRequire
       }
     }
   ],
