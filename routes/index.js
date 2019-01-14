@@ -7,6 +7,9 @@ const conversation = require('../controllers/conversation');
 const message = require('../controllers/message');
 const authRoutes = require('./auth')
 const auth = require('./helpers/jwt');
+const http = require('http');
+const socket = require('socket.io');
+const socketConnection = require('./socket');
 
 const errorResponses = function (code, err) {
   switch (code) {
@@ -50,4 +53,8 @@ module.exports = function (app) {
 
     return res.status(404).json(payload);
   });
+
+  const io = socket(http.Server(app));
+
+  socketConnection(io);
 };
